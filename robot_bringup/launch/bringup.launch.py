@@ -59,11 +59,23 @@ def generate_launch_description():
         output="screen",
     )
 
+    observation = Node(
+        package="robot_control",
+        executable="observation_node",
+        parameters=[
+            {
+                "use_sim_time": True,
+            }
+        ],
+        output="screen",
+    )
+
     return LaunchDescription(
         [
             simulation,
             joint_state_broadcaster,
             wheel_controller,
             estimator,
+            observation,
         ]
     )
