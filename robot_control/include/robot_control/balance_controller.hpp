@@ -21,12 +21,36 @@ class BalanceController
 public:
     BalanceController();
 
-    void setGains(float kp, float ki, float kd);
+    void reset();
 
-    float update(float pitch, float pitch_rate, float dt);
+    void setParameters(float kp,
+                       float ki,
+                       float kd,
+                       float position_kp,
+                       float velocity_kd,
+                       float max_pitch_reference,
+                       float integral_limit,
+                       float output_limit);
+
+    float update(float pitch,
+                 float pitch_rate,
+                 float left_wheel_velocity,
+                 float right_wheel_velocity,
+                 float left_wheel_position,
+                 float right_wheel_position,
+                 float dt);
 
 private:
-    float kp, ki, kd;
+    float kp;
+    float ki;
+    float kd;
+    float position_kp;
+    float velocity_kd;
+    float max_pitch_reference;
+    float integral_limit;
+    float output_limit;
 
     float integral;
+    float target_wheel_position;
+    bool target_wheel_position_initialized;
 };

@@ -15,6 +15,7 @@
  */
 
 #include <algorithm>
+
 #include "robot_control/balance_controller.hpp"
 
 BalanceController::BalanceController()
@@ -22,30 +23,74 @@ BalanceController::BalanceController()
     kp = 0.0f;
     ki = 0.0f;
     kd = 0.0f;
+    position_kp = 0.0f;
+    velocity_kd = 0.0f;
+    max_pitch_reference = 0.0f;
+    integral_limit = 0.0f;
+    output_limit = 0.0f;
 
-    integral = 0.0f;
+    reset();
 }
 
-void BalanceController::setGains(float p, float i, float d)
+void BalanceController::reset()
+{
+    integral = 0.0f;
+    target_wheel_position = 0.0f;
+    target_wheel_position_initialized = false;
+}
+
+void BalanceController::setParameters(float p,
+                                      float i,
+                                      float d,
+                                      float position_p,
+                                      float velocity_d,
+                                      float maximum_pitch_reference,
+                                      float maximum_integral,
+                                      float maximum_output)
 {
     kp = p;
     ki = i;
     kd = d;
+    position_kp = position_p;
+    velocity_kd = velocity_d;
+    max_pitch_reference = maximum_pitch_reference;
+    integral_limit = maximum_integral;
+    output_limit = maximum_output;
 }
 
-float BalanceController::update(float pitch, float pitch_rate, float dt)
+float BalanceController::update(float pitch,
+                                float pitch_rate,
+                                float left_wheel_velocity,
+                                float right_wheel_velocity,
+                                float left_wheel_position,
+                                float right_wheel_position,
+                                float dt)
 {
-    float error = 0.0f - pitch;
+    const float average_wheel_velocity = 0.5f * (left_wheel_velocity + right_wheel_velocity);
 
-    integral += error * dt;
+    const float average_wheel_position = 0.5f * (left_wheel_position + right_wheel_position);
 
-    integral = std::max(-1.0f, std::min(1.0f, integral));
+    if(!target_wheel_position_initialized)
+    {
+        target_wheel_position = average_wheel_position;
+        target_wheel_position_initialized = true;
+    }
 
-    static float filtered_pitch_rate = 0.0f;
-    filtered_pitch_rate = 0.8f * filtered_pitch_rate + 0.2f * (-pitch_rate);
-    float derivative = filtered_pitch_rate;
+    const float position_error = average_wheel_position - target_wheel_position;
 
-    float output = kp * error + ki * integral + kd * derivative;
+    float pitch_reference = -(position_kp * position_error + velocity_kd * average_wheel_velocity);
 
-    return -output;
+    pitch_reference = std::max(-max_pitch_reference, std::min(max_pitch_reference, pitch_reference));
+
+    const float balance_error = pitch - pitch_reference;
+
+    integral += balance_error * dt;
+
+    integral = std::max(-integral_limit, std::min(integral_limit, integral));
+
+    float torque = kp * balance_error + ki * integral + kd * pitch_rate;
+
+    torque = std::max(-output_limit, std::min(output_limit, torque));
+
+    return torque;
 }

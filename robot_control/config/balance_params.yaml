@@ -1,6 +1,11 @@
 balance_node:
   ros__parameters:
 
-    kp: 30.0
+    kp: 10.0
     ki: 0.0
-    kd: 2.0
+    kd: 0.2
+    position_kp: 0.002
+    velocity_kd: 0.002
+    max_pitch_reference: 0.02
+    integral_limit: 0.5
+    output_limit: 0.5

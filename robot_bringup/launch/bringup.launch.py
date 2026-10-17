@@ -70,6 +70,26 @@ def generate_launch_description():
         output="screen",
     )
 
+    control_share = get_package_share_directory(
+        "robot_control"
+    )
+
+    balance = Node(
+        package="robot_control",
+        executable="balance_node",
+        parameters=[
+            os.path.join(
+                control_share,
+                "config",
+                "balance_params.yaml",
+            ),
+            {
+                "use_sim_time": True,
+            },
+        ],
+        output="screen",
+    )
+
     return LaunchDescription(
         [
             simulation,
@@ -77,5 +97,6 @@ def generate_launch_description():
             wheel_controller,
             estimator,
             observation,
+            balance,
         ]
     )
