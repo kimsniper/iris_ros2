@@ -3,13 +3,9 @@
 <package format="3">
   <name>robot_bringup</name>
   <version>1.0.0</version>
-  <description>
-    ROS 2 and Gazebo bringup for IRIS.
-  </description>
-
-  <maintainer email="kim1991mail@gmail.com">
-    Mezael Docoy
-  </maintainer>
+  <description>Robot Bringup Package</description>
+  <maintainer email="kim1991mail@gmail.com">Mezael Docoy</maintainer>
+  <license>Apache 2.0</license>
 
   <license>BSD-3-Clause</license>
 

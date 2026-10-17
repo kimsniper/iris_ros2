@@ -3,15 +3,9 @@
 <package format="3">
   <name>robot_sim</name>
   <version>1.0.0</version>
-  <description>
-    Gazebo simulation resources for IRIS.
-  </description>
-
-  <maintainer email="kim1991mail@gmail.com">
-    Mezael Docoy
-  </maintainer>
-
-  <license>BSD-3-Clause</license>
+  <description>Robot Sim Package</description>
+  <maintainer email="kim1991mail@gmail.com">Mezael Docoy</maintainer>
+  <license>Apache 2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
