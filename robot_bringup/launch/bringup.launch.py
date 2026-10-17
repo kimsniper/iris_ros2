@@ -48,10 +48,22 @@ def generate_launch_description():
         output="screen",
     )
 
+    estimator = Node(
+        package="robot_estimation",
+        executable="robot_estimator",
+        parameters=[
+            {
+                "use_sim_time": True,
+            }
+        ],
+        output="screen",
+    )
+
     return LaunchDescription(
         [
             simulation,
             joint_state_broadcaster,
             wheel_controller,
+            estimator,
         ]
     )
