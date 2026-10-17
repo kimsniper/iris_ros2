@@ -1,0 +1,207 @@
+<?xml version="1.0"?>
+
+<robot name="two_wheel_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- Include Gazebo Parameters -->
+    <xacro:include filename="$(find robot_description)/urdf/two_wheel_robot_gazebo.urdf.xacro" />
+
+    <!-- Include ros2_control Plugins -->
+    <xacro:include filename="$(find robot_description)/urdf/two_wheel_robot_ros2_control.urdf.xacro" />
+
+    <!-- Links -->
+    
+    <link name="base_footprint"/>
+
+    <link name="base_link">
+
+        <inertial>
+            <origin xyz="0 0 0.095"/>
+            <mass value="0.80"/>
+
+            <inertia
+                ixx="0.0068067"
+                ixy="0.0"
+                ixz="0.0"
+                iyy="0.0040333"
+                iyz="0.0"
+                izz="0.0092267"/>
+        </inertial>
+
+        <!-- Lower plate -->
+        <visual>
+            <origin xyz="0 0 0.045"/>
+            <geometry>
+                <box size="0.22 0.30 0.005"/>
+            </geometry>
+
+            <material name="black">
+                <color rgba="0.1 0.1 0.1 1"/>
+            </material>
+        </visual>
+
+        <!-- Upper plate -->
+        <visual>
+            <origin xyz="0 0 0.145"/>
+            <geometry>
+                <box size="0.22 0.30 0.005"/>
+            </geometry>
+
+            <material name="black"/>
+        </visual>
+
+        <!-- Front left standoff -->
+        <visual>
+            <origin xyz="0.09 0.12 0.095"/>
+            <geometry>
+                <cylinder radius="0.005" length="0.10"/>
+            </geometry>
+
+            <material name="gold">
+                <color rgba="0.85 0.70 0.20 1"/>
+            </material>
+        </visual>
+
+        <!-- Front right standoff -->
+        <visual>
+            <origin xyz="0.09 -0.12 0.095"/>
+            <geometry>
+                <cylinder radius="0.005" length="0.10"/>
+            </geometry>
+
+            <material name="gold"/>
+        </visual>
+
+        <!-- Rear left standoff -->
+        <visual>
+            <origin xyz="-0.09 0.12 0.095"/>
+            <geometry>
+                <cylinder radius="0.005" length="0.10"/>
+            </geometry>
+
+            <material name="gold"/>
+        </visual>
+
+        <!-- Rear right standoff -->
+        <visual>
+            <origin xyz="-0.09 -0.12 0.095"/>
+            <geometry>
+                <cylinder radius="0.005" length="0.10"/>
+            </geometry>
+
+            <material name="gold"/>
+        </visual>
+
+        <collision>
+            <origin xyz="0 0 0.095"/>
+            <geometry>
+                <box size="0.22 0.30 0.11"/>
+            </geometry>
+        </collision>
+
+    </link>
+
+    <link name="left_wheel">
+        <inertial>
+            <origin xyz="0 0 0"/>
+            <mass value="0.5"/>
+            <inertia
+                ixx="0.0008375" ixy="0.0" ixz="0.0"
+                iyy="0.0016000" iyz="0.0"
+                izz="0.0008375"/>
+        </inertial>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="1.5707 0 0"/>
+            <geometry>
+                <cylinder radius="0.08" length="0.03"/>
+            </geometry>
+            <material name="black">
+                <color rgba="0.1 0.1 0.1 1"/>
+            </material>
+        </visual>
+
+        <collision>
+            <origin xyz="0 0 0" rpy="1.5707 0 0"/>
+            <geometry>
+                <cylinder radius="0.08" length="0.03"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <link name="right_wheel">
+        <inertial>
+            <origin xyz="0 0 0"/>
+            <mass value="0.5"/>
+            <inertia
+                ixx="0.0008375" ixy="0.0" ixz="0.0"
+                iyy="0.0016000" iyz="0.0"
+                izz="0.0008375"/>
+        </inertial>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="1.5707 0 0"/>
+            <geometry>
+                <cylinder radius="0.08" length="0.03"/>
+            </geometry>
+            <material name="black">
+                <color rgba="0.1 0.1 0.1 1"/>
+            </material>
+        </visual>
+
+        <collision>
+            <origin xyz="0 0 0" rpy="1.5707 0 0"/>
+            <geometry>
+                <cylinder radius="0.08" length="0.03"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- Joints -->
+
+    <joint name="base_footprint_joint" type="fixed">
+        <parent link="base_footprint"/>
+        <child link="base_link"/>
+        <origin xyz="0 0 0.08" rpy="0 0 0"/>
+    </joint>
+
+    <joint name="left_wheel_joint" type="continuous">
+        <parent link="base_link"/>
+        <child link="left_wheel"/>
+        <origin xyz="0 0.165 0"/>
+        <axis xyz="0 1 0"/>
+        <dynamics damping="0.01" friction="0.01"/>
+    </joint>
+
+    <joint name="right_wheel_joint" type="continuous">
+        <parent link="base_link"/>
+        <child link="right_wheel"/>
+        <origin xyz="0 -0.165 0"/>
+        <axis xyz="0 1 0"/>
+        <dynamics damping="0.01" friction="0.01"/>
+    </joint>
+
+    <!-- IMU -->
+    <link name="imu_link">
+
+        <inertial>
+            <origin xyz="0 0 0"/>
+            <mass value="0.01"/>
+
+            <inertia
+                ixx="0.0000007708"
+                ixy="0.0"
+                ixz="0.0"
+                iyy="0.0000003542"
+                iyz="0.0"
+                izz="0.0000010833"/>
+        </inertial>
+
+    </link>
+
+    <joint name="imu_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="imu_link"/>
+        <origin xyz="0 0 0"/>
+    </joint>
+
+</robot>

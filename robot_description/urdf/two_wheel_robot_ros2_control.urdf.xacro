@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+
+<robot
+  name="two_wheel_robot"
+  xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <ros2_control
+    name="GazeboSimSystem"
+    type="system">
+
+    <hardware>
+      <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+    </hardware>
+
+    <joint name="left_wheel_joint">
+      <command_interface name="effort">
+        <param name="min">-0.5</param>
+        <param name="max">0.5</param>
+      </command_interface>
+
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+
+    <joint name="right_wheel_joint">
+      <command_interface name="effort">
+        <param name="min">-0.5</param>
+        <param name="max">0.5</param>
+      </command_interface>
+
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+  </ros2_control>
+
+  <gazebo>
+    <plugin
+      filename="libgz_ros2_control-system.so"
+      name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+
+      <parameters>
+        $(find robot_sim)/config/wheel_control.yaml
+      </parameters>
+    </plugin>
+  </gazebo>
+</robot>
